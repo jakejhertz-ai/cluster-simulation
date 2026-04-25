@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cluster Simulation</title>
+</head>
+<body style="font-family: Arial; max-width: 700px; margin: auto;">
+
+  <h2>Explore Clustered Study Design</h2>
+
+  <p>Adjust the inputs to see how clustering affects the amount of information in a study.</p>
+
+  <label>Number of clusters:</label><br>
+  <input type="range" id="clusters" min="5" max="50" value="20" oninput="update()">
+  <span id="clustersVal"></span><br><br>
+
+  <label>Individuals per cluster:</label><br>
+  <input type="range" id="size" min="5" max="100" value="40" oninput="update()">
+  <span id="sizeVal"></span><br><br>
+
+  <label>Similarity within clusters (ICC):</label><br>
+  <input type="range" id="icc" min="0" max="0.2" step="0.01" value="0.05" oninput="update()">
+  <span id="iccVal"></span><br><br>
+
+  <h3>Results</h3>
+  <p id="results"></p>
+
+  <script>
+    function update() {
+      let c = +document.getElementById("clusters").value;
+      let n = +document.getElementById("size").value;
+      let icc = +document.getElementById("icc").value;
+
+      document.getElementById("clustersVal").innerText = c;
+      document.getElementById("sizeVal").innerText = n;
+      document.getElementById("iccVal").innerText = icc.toFixed(2);
+
+      let N = c * n;
+      let de = 1 + (n - 1) * icc;
+      let eff = Math.round(N / de);
+
+      document.getElementById("results").innerHTML =
+        "Total sample size: " + N + "<br>" +
+        "Design effect: " + de.toFixed(2) + "<br>" +
+        "Effective sample size: " + eff + "<br><br>" +
+        "Higher similarity reduces the amount of independent information in the data.";
+    }
+
+    update();
+  </script>
+
+</body>
+</html>
