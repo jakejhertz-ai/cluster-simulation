@@ -4,26 +4,50 @@
   <meta charset="UTF-8">
   <title>Cluster Simulation</title>
 </head>
+
 <body style="font-family: Arial; max-width: 700px; margin: auto;">
 
   <h2>Explore Clustered Study Design</h2>
 
-  <p>Adjust the inputs to see how clustering affects the amount of information in a study.</p>
+  <p>
+    Adjust the inputs below to examine how cluster size, number of clusters,
+    and similarity within clusters affect the amount of information in a study.
+  </p>
 
-  <label>Number of clusters:</label><br>
-  <input type="range" id="clusters" min="5" max="50" value="20" oninput="update()">
-  <span id="clustersVal"></span><br><br>
+  <!-- Number of clusters -->
+  <label for="clusters">Number of clusters</label>
+  <p id="clusters-desc">
+    The number of groups in the study (for example, hospitals or schools).
+  </p>
+  <input type="range" id="clusters" min="5" max="50" value="20" oninput="syncClusters(this.value)" aria-describedby="clusters-desc">
+  <input type="number" id="clustersInput" min="5" max="50" value="20" oninput="syncClusters(this.value)">
+  <br><br>
 
-  <label>Individuals per cluster:</label><br>
-  <input type="range" id="size" min="5" max="100" value="40" oninput="update()">
-  <span id="sizeVal"></span><br><br>
+  <!-- Individuals per cluster -->
+  <label for="size">Individuals per cluster</label>
+  <p id="size-desc">
+    The number of individuals observed within each group.
+  </p>
+  <input type="range" id="size" min="5" max="100" value="40" oninput="syncSize(this.value)" aria-describedby="size-desc">
+  <input type="number" id="sizeInput" min="5" max="100" value="40" oninput="syncSize(this.value)">
+  <br><br>
 
-  <label>Similarity within clusters (ICC):</label><br>
-  <input type="range" id="icc" min="0" max="0.2" step="0.01" value="0.05" oninput="update()">
-  <span id="iccVal"></span><br><br>
+  <!-- ICC -->
+  <label for="icc">Similarity within clusters</label>
+  <p id="icc-desc">
+    Higher values indicate that individuals within the same group are more similar to one another.
+  </p>
+  <input type="range" id="icc" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)" aria-describedby="icc-desc">
+  <input type="number" id="iccInput" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)">
+  <br><br>
 
   <h3>Results</h3>
-  <p id="results"></p>
+  <p id="results" aria-live="polite"></p>
+
+  <!-- Accessibility fallback -->
+  <p>
+    If you are unable to use the interactive tool, note that increasing the number of clusters typically provides more independent information than increasing the number of individuals within each cluster. Higher similarity within clusters reduces the effective sample size.
+  </p>
 
   <script>
     function update() {
@@ -31,19 +55,33 @@
       let n = +document.getElementById("size").value;
       let icc = +document.getElementById("icc").value;
 
-      document.getElementById("clustersVal").innerText = c;
-      document.getElementById("sizeVal").innerText = n;
-      document.getElementById("iccVal").innerText = icc.toFixed(2);
-
       let N = c * n;
-      let de = 1 + (n - 1) * icc;
-      let eff = Math.round(N / de);
+      let designEffect = 1 + (n - 1) * icc;
+      let effectiveN = Math.round(N / designEffect);
 
       document.getElementById("results").innerHTML =
         "Total sample size: " + N + "<br>" +
-        "Design effect: " + de.toFixed(2) + "<br>" +
-        "Effective sample size: " + eff + "<br><br>" +
-        "Higher similarity reduces the amount of independent information in the data.";
+        "Design effect: " + designEffect.toFixed(2) + "<br>" +
+        "Effective sample size: " + effectiveN + "<br><br>" +
+        "As similarity within clusters increases, the amount of independent information decreases. Increasing the number of clusters generally improves the effective sample size more than increasing the number of individuals within each cluster.";
+    }
+
+    function syncClusters(val) {
+      document.getElementById("clusters").value = val;
+      document.getElementById("clustersInput").value = val;
+      update();
+    }
+
+    function syncSize(val) {
+      document.getElementById("size").value = val;
+      document.getElementById("sizeInput").value = val;
+      update();
+    }
+
+    function syncICC(val) {
+      document.getElementById("icc").value = val;
+      document.getElementById("iccInput").value = val;
+      update();
     }
 
     update();
