@@ -14,39 +14,54 @@
     and similarity within clusters affect the amount of information in a study.
   </p>
 
-  <!-- Number of clusters -->
-  <label for="clusters">Number of clusters</label>
-  <p id="clusters-desc">
-    The number of groups in the study (for example, hospitals or schools).
-  </p>
-  <input type="range" id="clusters" min="5" max="50" value="20" oninput="syncClusters(this.value)" aria-describedby="clusters-desc">
-  <input type="number" id="clustersInput" min="5" max="50" value="20" oninput="syncClusters(this.value)">
-  <br><br>
+  <h3>Step 1: Define the Study</h3>
 
-  <!-- Individuals per cluster -->
-  <label for="size">Individuals per cluster</label>
-  <p id="size-desc">
-    The number of individuals observed within each group.
-  </p>
-  <input type="range" id="size" min="5" max="100" value="40" oninput="syncSize(this.value)" aria-describedby="size-desc">
-  <input type="number" id="sizeInput" min="5" max="100" value="40" oninput="syncSize(this.value)">
-  <br><br>
+  <fieldset>
+    <legend>Study Structure</legend>
 
-  <!-- ICC -->
-  <label for="icc">Similarity within clusters</label>
-  <p id="icc-desc">
-    Higher values indicate that individuals within the same group are more similar to one another.
-  </p>
-  <input type="range" id="icc" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)" aria-describedby="icc-desc">
-  <input type="number" id="iccInput" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)">
-  <br><br>
+    <label for="clusters">Number of clusters</label>
+    <p id="clusters-desc">
+      The number of groups in the study (for example, hospitals or schools).
+    </p>
+    <input type="range" id="clusters" min="5" max="50" value="20" oninput="syncClusters(this.value)" aria-describedby="clusters-desc">
+    <input type="number" id="clustersInput" min="5" max="50" value="20" oninput="syncClusters(this.value)">
+    <br><br>
+
+    <label for="size">Individuals per cluster</label>
+    <p id="size-desc">
+      The number of individuals observed within each group.
+    </p>
+    <input type="range" id="size" min="5" max="100" value="40" oninput="syncSize(this.value)" aria-describedby="size-desc">
+    <input type="number" id="sizeInput" min="5" max="100" value="40" oninput="syncSize(this.value)">
+
+  </fieldset>
+
+  <h3>Step 2: Similarity Within Clusters</h3>
+
+  <fieldset>
+    <legend>Clustering</legend>
+
+    <label for="icc">Similarity within clusters</label>
+    <p id="icc-desc">
+      Higher values indicate that individuals within the same group are more similar to one another.
+    </p>
+    <input type="range" id="icc" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)" aria-describedby="icc-desc">
+    <input type="number" id="iccInput" min="0" max="0.2" step="0.01" value="0.05" oninput="syncICC(this.value)">
+
+  </fieldset>
 
   <h3>Results</h3>
+
   <p id="results" aria-live="polite"></p>
 
-  <!-- Accessibility fallback -->
+  <h3>Interpretation</h3>
+
   <p>
-    If you are unable to use the interactive tool, note that increasing the number of clusters typically provides more independent information than increasing the number of individuals within each cluster. Higher similarity within clusters reduces the effective sample size.
+    Increasing the number of clusters generally improves the amount of independent information more than increasing the number of individuals within each cluster. Higher similarity within clusters reduces the effective sample size.
+  </p>
+
+  <p>
+    If you are unable to use the interactive tool, note that increasing the number of clusters typically provides more independent information than increasing the number of individuals within each cluster.
   </p>
 
   <script>
@@ -62,8 +77,7 @@
       document.getElementById("results").innerHTML =
         "Total sample size: " + N + "<br>" +
         "Design effect: " + designEffect.toFixed(2) + "<br>" +
-        "Effective sample size: " + effectiveN + "<br><br>" +
-        "As similarity within clusters increases, the amount of independent information decreases. Increasing the number of clusters generally improves the effective sample size more than increasing the number of individuals within each cluster.";
+        "Effective sample size: " + effectiveN;
     }
 
     function syncClusters(val) {
